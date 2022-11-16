@@ -1,23 +1,35 @@
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 
+function Header() {
+  return (
+    <header>
+      <h1>TEST</h1>
+    </header>
+  );
+}
+
+function Main() {
+  return (
+    <p>
+      test -- normal text
+    </p>
+  )
+}
+
 function App() {
+
+  fetch('getdata').then(
+    function(response) {
+      console.log(response)
+      console.log(response.type)
+    }
+  )
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header></Header>
+      <Main></Main>
     </div>
   );
 }
