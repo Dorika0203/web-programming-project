@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#btn_update").click(function(event) {
+                    $.getJSON("/getdata", function(playlist) {
+                        $("#playlist").empty()
+                        $.each(playlist, function(key, value) {
+                            $("#playlist").append("<li>" + key + ": " + value + "</li>");
+                        })
+                    })
+                })
+
+                $("#btn_submit").click(function(event) {
+                    var artist = $("#artist").val()
+                    var music = $("#music").val()
+                    var data = {"artist": artist, "music": music}
+                    console.log(data)
+                    $.ajax({
+                        url: "/postmusic",
+                        type: "post",
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify(data),
+                        success: function(playlist) {
+                            $("#playlist").empty()
+                            $.each(playlist, function(key, value) {
+                                $("#playlist").append("<li>" + key + ": " + value + "</li>");
+                            })
+                        }
+                    })
+                })
+
+            })
+        </script>
+    </head>
+
+    <body>
+        <div>
+            <ul id="playlist">
+            </ul>
+        </div>
+        <div>
+            Artist: <input type="text" name="artist" id="artist"><br>
+            Music: <input type="text" name="music" id="music"><br>
+            <button id="btn_submit">submit</button>
+            <button id="btn_update">update</button>
+        </div>
+    </body>
+</html>
