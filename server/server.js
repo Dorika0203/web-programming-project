@@ -6,10 +6,12 @@ app.use(express.static(
 ))
 
 app.get("/api", (req, res) => {
+    console.log('/api called!!')
     res.json({"users": ["user1, user2, user3"]})
 })
 
 app.get("/", function(request, response) {
+    console.log('/ called!!')
     response.sendFile(path.join(__dirname, '../client/build/index.html'))
 })
 
