@@ -1,74 +1,55 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 import './Login.css'
 
-function FrontPage() {
 
-  const [modalF, setModalF] = useState(false)
-
-  function openModal() {
-    setModalF(true)
-  }
-
-  function afterOpenModal() {
-    console.log('after')
-  }
-
-  function closeModal() {
-    setModalF(false)
-  }
-
-
+function Signup(props) {
 
   return (
+      <Modal
+          isOpen={props.flag}
+          ariaHideApp={false}>
+          <div>HELLO MODAL</div>
+          <button onClick={props.setFlag(false)}>close</button>
+      </Modal>
+  )
+}
+
+
+function FrontPage() {
+
+  const [signupFlag, setSignupFlag] = useState(false)
+
+  function setFlagTo(val) {
+    setSignupFlag(val)
+  }
+  
+  return (
     <div className='front-page'>
+      <Signup flag={signupFlag} setFlag={setFlagTo}></Signup>
       <div className="log-form">
         <h2>Login to your account</h2>
         <form>
           <input type="text" title="username" placeholder="username" />
           <input type="password" title="username" placeholder="password" />
-          <button type="submit" className="btn" onClick={(event) => {
-            openModal()
-          }}>Login</button>
+          <button type="submit" className="btn">Login</button>
           <div className='linkbox'>
-            <a className="forgot_signup" href="##">Forgot Password?</a><br></br>
-            <a className="forgot_signup" href="#">No Account?</a>
+            <a className="forgot_signup">Forgot Password?</a><br></br>
+            <a className="forgot_signup" onClick={() => {
+              setSignupFlag(true)
+              return false
+            }}>No Account?</a>
           </div>
         </form>
       </div>
-
-      <Modal
-        isOpen={modalF}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-      >
-        <div>THIS IS TEST MODAL</div>
-        <button onClick={closeModal}>close</button>
-      </Modal>
     </div>
   )
 }
 
 function App() {
 
-  const [backendData, setBackendData] = useState([{}])
-
-  useEffect(() => {
-    fetch("/api")
-      .then(
-        response => response.json()
-      )
-      .then(
-        data => {
-          setBackendData(data)
-        }
-      )
-  }, [])
-
-  // console.log(backendData)
   return (
     <FrontPage></FrontPage>
-    // <div>App</div>
   )
 }
 
