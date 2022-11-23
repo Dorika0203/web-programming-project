@@ -1,6 +1,5 @@
--- Active: 1669134959110@@127.0.0.1@3306@webpdb
-create database if not exists webpdb;
-
+-- SQLBook: Code
+-- Active: 1669171733588@@127.0.0.1@3306@webpdb
 use webpdb;
 
 DROP TABLE users;
