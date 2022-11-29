@@ -1,5 +1,5 @@
 -- SQLBook: Code
--- Active: 1669171733588@@127.0.0.1@3306@webpdb
+-- Active: 1669134959110@@127.0.0.1@3306@webpdb
 use webpdb;
 
 DROP TABLE users;
@@ -10,7 +10,8 @@ create table if not exists users (
     pw char(4) not null,
     email char(30) not null,
     phone char(13) not null,
+    usertype char(1) not null,
     primary key(usercode)
 );
 
-INSERT INTO users (id, pw, email, phone) VALUES ('id', 'pw', 'a@b.com', '010-0000-0000')
+INSERT INTO users (id, pw, email, phone, usertype) VALUES ('root', 'root', 'root@admin.com', '010-0000-0000', 'r')
