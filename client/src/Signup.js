@@ -82,9 +82,9 @@ function Signup(props) {
           <input type="password" name='pwcheck' placeholder="password 재입력" onChange={(e) => handleChange('pwcheck', e.target.value)}/><br></br>
           <input type="email" name='email' placeholder="qwer@asdf.com" onChange={(e) => handleChange('email', e.target.value)}/><br></br>
           <input type="phone" name='phone' placeholder="010-5618-5623" onChange={(e) => handleChange('phone', e.target.value)}/><br></br>
-          <select name='usertype' defaultValue={'b'} onChange={(e) => handleChange('usertype', e.target.value)}>
-            <option value={'b'}>구매자</option>
-            <option value={'s'}>판매자</option>
+          <select name='usertype' defaultValue={'B'} onChange={(e) => handleChange('usertype', e.target.value)}>
+            <option value={'B'}>구매자</option>
+            <option value={'S'}>판매자</option>
             </select><br></br>
         </form>
         <button onClick={handleSubmit}>제출</button>

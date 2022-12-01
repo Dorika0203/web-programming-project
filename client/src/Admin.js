@@ -1,41 +1,102 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Admin.css'
 import axios from 'axios'
+import { styled, alpha } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import AdminSearchBar from './AdminSearchBar'
+import { Button } from '@mui/material';
 
-function AdminPage(props) {
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: '#e6e081',
+        color: theme.palette.common.black,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));
+
+export default function AdminPage(props) {
+
+    const [keyword, setKeyword] = useState('')
+    const [data, setData] = useState([])
+    const getData = async (e) => {
+        try {
+            const res = await axios.get(
+                "/api/admin/read",
+            )
+            if (res.status === 200) {
+                setData(res.data[0])
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+    const removeAxios = async (removeCode) => {
+        try {
+            const res = await axios.post(
+                "/api/admin/remove",
+                { usercode: removeCode },
+            )
+            if (res.status === 200) {
+                alert("removed.")
+                window.location.reload()
+            }
+        }
+        catch (err) {
+            alert(err)
+        }
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
+
     return (
         <div>
-            <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-                {/* <!-- Navbar Brand--> */}
-                <a className="navbar-brand ps-3" href="#!">Start Bootstrap</a>
-                {/* <!-- Sidebar Toggle--> */}
-                <button className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i className="fas fa-bars"></i></button>
-                {/* <!-- Navbar Search--> */}
-                <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                    <div className="input-group">
-                        <input className="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                        <button className="btn btn-primary" id="btnNavbarSearch" type="button"><i className="fas fa-search"></i></button>
-                    </div>
-                </form>
-                {/* <!-- Navbar--> */}
-                <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                    <li className="nav-item dropdown">
-                        <a className="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i className="fas fa-user fa-fw"></i></a>
-                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a className="dropdown-item" href="#!">Settings</a></li>
-                            <li><a className="dropdown-item" href="#!">Activity Log</a></li>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li><a className="dropdown-item" href="#!">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
-            
-            <div>
-                Hello
-            </div>
+            <AdminSearchBar setShowRows={setKeyword}></AdminSearchBar>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell width='10%'>User Code</StyledTableCell>
+                            <StyledTableCell width='30%'>ID</StyledTableCell>
+                            <StyledTableCell width='30%'>email</StyledTableCell>
+                            <StyledTableCell width='10%'>User Type</StyledTableCell>
+                            <StyledTableCell width='10%'>Modify</StyledTableCell>
+                            <StyledTableCell width='10%'>Remove</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.filter((value) => {
+                            const findregex = new RegExp(
+                                '^.*' + keyword + '.*$'
+                            )
+                            return findregex.test(value.id)
+                        }).map((row) => (
+                            <TableRow
+                                key={row.usercode}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell width='10%'>{row.usercode}</TableCell>
+                                <TableCell width="30%">{row.id}</TableCell>
+                                <TableCell width="30%">{row.email}</TableCell>
+                                <TableCell width="10%">{row.usertype}</TableCell>
+                                <TableCell width="10%"><Button variant='contained' color='success'>수정</Button></TableCell>
+                                <TableCell width="10%"><Button variant='contained' color='error' onClick={(e) => { removeAxios(row.usercode) }}>삭제</Button></TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
-    )
+    );
 }
-
-export default AdminPage;

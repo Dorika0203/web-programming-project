@@ -14,4 +14,6 @@ create table if not exists users (
     primary key(usercode)
 );
 
-INSERT INTO users (id, pw, email, phone, usertype) VALUES ('root', 'root', 'root@admin.com', '010-0000-0000', 'r')
+INSERT INTO users (id, pw, email, phone, usertype) VALUES ('root', 'root', 'root@admin.com', '010-0000-0000', 'R');
+INSERT INTO users (id, pw, email, phone, usertype) VALUES ('qwer', 'qwer', 'qwer@asdf.com', '010-1111-1111', 'B');
+INSERT INTO users (id, pw, email, phone, usertype) VALUES ('asdf', 'asdf', 'asdf@qwer.com', '010-2222-2222', 'S');

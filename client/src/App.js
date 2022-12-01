@@ -29,9 +29,9 @@ function App() {
   checkIfLogin()
 
   if (isLogin) {
-    if(userFlag === 'b') return(<BuyerPage setLogin={setIsLogin}></BuyerPage>)
-    else if(userFlag === 's') return(<SellerPage setLogin={setIsLogin}></SellerPage>)
-    else if(userFlag === 'r') return(<AdminPage setLogin={setIsLogin}></AdminPage>)
+    if(userFlag === 'B') return(<BuyerPage setLogin={setIsLogin}></BuyerPage>)
+    else if(userFlag === 'S') return(<SellerPage setLogin={setIsLogin}></SellerPage>)
+    else if(userFlag === 'R') return(<AdminPage setLogin={setIsLogin}></AdminPage>)
     else return(<div>ERROR</div>)
   }
   else {

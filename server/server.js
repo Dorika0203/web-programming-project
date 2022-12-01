@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const bodyParser = require('body-parser')
-const { response } = require('express')
+const { response, application } = require('express')
 const session = require('express-session')
 const MySQLStore = require('express-mysql-session')(session)
 const options = {
@@ -45,6 +45,28 @@ app.use(session({
 
 
 
+app.get("/", async (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'))
+    return
+})
+
+app.get("/api/session", async (req, res) => {
+
+    if (req.session.userId) {
+        res.status(200).json({ message: 'login OK', usertype: req.session.usertype})
+        return
+    }
+    else {
+        res.status(400).json({ message: 'Not available cookie' })
+    }
+    return
+}
+)
+
+
+
+
+
 app.post("/api/signup", async (req, res) => {
 
     let data = req.body
@@ -75,15 +97,14 @@ app.post("/api/signup", async (req, res) => {
             'insert into users (id, pw, email, phone, usertype) values (?, ?, ?, ?, ?)'
             , [data.id, data.pw, data.email, data.phone, data.usertype])
         res.json({ message: "OK" }).send()
+        return
     }
     catch (err) {
         console.log(err)
         res.status(500).send()
+        return
     }
 })
-
-
-
 
 app.post("/api/login", async (req, res) => {
 
@@ -110,6 +131,7 @@ app.post("/api/login", async (req, res) => {
         req.session.save()
         res.json({ message: "login OK" })
         console.log("LOGIN Accepted by ID/PW")
+        return
     }
     catch (err) {
         console.log(err)
@@ -121,23 +143,46 @@ app.post("/api/login", async (req, res) => {
 
 
 
-
-app.get("/api/session", async (req, res) => {
-
-    if (req.session.userId) {
-        res.status(200).json({ message: 'login OK', usertype: req.session.usertype})
+app.get("/api/admin/read", async (req, res) => {
+    try {
+        const queryResult = await promisePool.query(
+            'select * from users'
+        )
+        res.status(200).json(queryResult).send()
         return
     }
-    else {
-        res.status(400).json({ message: 'Not available cookie' })
+    catch (err) {
+        console.log(err)
+        res.status(500).send()
+        return
     }
-    return
-}
-)
-
-app.get("/", async (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'))
-    return
 })
+
+
+
+app.post("/api/admin/remove", async (req, res) => {
+    
+    let data = req.body
+
+    if (!req.session.userId) {
+        res.status(500).send()
+        return
+    }
+
+    try {
+        const queryResult = await promisePool.query(
+            'delete from users where usercode=?', [data.usercode]
+        )
+        res.status(200).send()
+        return
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send()
+        return
+    }
+})
+
+
 
 app.listen(5000, () => { console.log("Server started on port 5000") })
