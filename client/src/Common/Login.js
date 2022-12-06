@@ -44,9 +44,11 @@ function LoginPage() {
         catch (err) {
             if (err.response.status === 500) {
                 alert('SERVER INTERNAL ERROR')
+                return
             }
             if (err.response.status === 400) {
                 alert(err.response.data.message)
+                return
             }
         }
     }

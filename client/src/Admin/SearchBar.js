@@ -48,7 +48,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function AdminSearchBar(props) {
+export default function SearchBar(props) {
 
   const [kword, setkword] = React.useState('')
   const handleButton = async (e) => {
@@ -66,7 +66,7 @@ export default function AdminSearchBar(props) {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            Welcome Admin
+            {props.usage}
           </Typography>
           <Search>
             <SearchIconWrapper>
