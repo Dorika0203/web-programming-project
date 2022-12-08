@@ -1,8 +1,10 @@
 -- SQLBook: Code
--- Active: 1669134959110@@127.0.0.1@3306@webpdb
+-- Active: 1669171733588@@127.0.0.1@3306@webpdb
 use webpdb;
 
 DROP TABLE users;
+DROP TABLE sessions;
+DROp TABLE products;
 
 create table if NOT exists users (
     usercode INT AUTO_INCREMENT NOT NULL,
@@ -19,7 +21,6 @@ INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('root', 'root',
 INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('qwer', 'qwer', 'qwer@asdf.com', '010-1111-1111', 'qwe', 'S');
 INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('asdf', 'asdf', 'asdf@qwer.com', '010-2222-2222', 'asd', 'B');
 
-DROP TABLE products;
 create table if NOT exists products (
     pcode INT AUTO_INCREMENT NOT NULL,
     sellerid VARCHAR(4) NOT NULL,
@@ -35,5 +36,8 @@ create table if NOT exists products (
     PRIMARY KEY(pcode)
 );
 
+
+TRUNCATE TABLE products;
+
 INSERT INTO products (sellerid, name, price, place, ptype, ptext, ptextdetail, pimage)
-    VALUES ('qwer', 'pretty bag', 10000, 'Suwon', 'F', 'adidas handbag', 'sakdfjlkasdjflkasfdjkljdsa', 'asdf');
+    VALUES ('qwer', 'product_1', 10000, 'Suwon', 'F', 'adidas handbag', 'sakdfjlkasdjflkasfdjkljdsa', 'p1.jpg');

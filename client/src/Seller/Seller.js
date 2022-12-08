@@ -12,29 +12,6 @@ import { Button, Stack } from '@mui/material';
 import SearchBar from '../Admin/SearchBar';
 import SellerUpdate from './SellerUpdate';
 
-// 이름, 가격, 거래장소, 전화번호, (옥션인지, 구매됬는지, 진행중인지)
-// 판매 물건 정보 수정, 삭제
-// 판매 물건 리스트 - 상품 이름, 희망 구매자 수
-// 옥션 히스토리 - 가격, 흥정자 ID
-
-
-// 판매 물건 DB
-
-// 물건 코드번호 - pcode
-// 판매자 ID - sellerid
-// 물건 이름 - name
-// 물건 가격 (경매 시 최신 가격) - price
-// 물건 거래장소 - place
-// 물건 거래타입(고정가, 경매) - ptype
-// 물건 간단정보 - ptext
-// 물건 상세정보 - ptextdetail
-// 물건 사진 - pimage
-// 찜한사람 수 - plikes
-// 물건 최근 수정 시간 - ptime
-
-// 경매 물건별 히스토리
-
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: '#e6e081',
@@ -69,7 +46,6 @@ function SellerPage(props) {
             )
             if (res.status === 200) {
                 setData(res.data[0])
-                // console.log(res.data[0])
             }
             return
         }
@@ -148,7 +124,7 @@ function SellerPage(props) {
                                 key={row.pcode}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell width='10%'>{row.pimage}</TableCell>
+                                <TableCell width='10%'><img src={window.location.href + 'api/images/' + row.pimage} width='100' height='100'></img></TableCell>
                                 <TableCell width='10%'>{row.name}</TableCell>
                                 <TableCell width='10%'>{row.price + '원'}</TableCell>
                                 <TableCell width='10%'>{row.place}</TableCell>
@@ -169,7 +145,7 @@ function SellerPage(props) {
                                         pcode: row.pcode
                                     })
                                 }}>수정</Button></TableCell>
-                                <TableCell width="10%"><Button variant='contained' color='error' onClick={(e) => {removeAxios(row.usercode) }} >삭제</Button></TableCell>
+                                <TableCell width="10%"><Button variant='contained' color='error' onClick={(e) => { removeAxios(row.usercode) }} >삭제</Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

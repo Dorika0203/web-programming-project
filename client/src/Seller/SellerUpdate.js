@@ -12,8 +12,8 @@ function SellerUpdate(props) {
         ptype: '',
         ptext: '',
         ptextdetail: '',
-        pimage: '',
-        pcode: ''
+        pimage: undefined, // for image code in DB
+        pcode: '' // for modification
     })
 
     const name_place_ptext_Regex = new RegExp(
@@ -50,56 +50,44 @@ function SellerUpdate(props) {
             alert('가격은 0원 이상 1억 미만')
             return
         }
-        console.log(data)
-        try {
-            let res = undefined
-            const sendingForm = data.pimage
-            console.log(typeof(sendingForm))
-            Object.keys(data).forEach(key => {
-                console.log(key, data[key])
-            });
+        if (!data.pimage) {
+            alert('이미지를 올려주세요')
+            return
+        }
 
-            if (props.flag === 2) {
-                res = await axios.post(
-                    "/api/seller/modify",
-                    data,
-                    // {
-                    //     headers: {
-                    //         "Content-Type": "multipart/form-data"
-                    //     }
-                    // }
+        try {
+            const formData = new FormData();
+            Object.entries(data).forEach(([key, value])=> {
+                formData.append(key, value)
+            })
+            // for (var pair of formData.entries()) {
+            //     console.log(pair[0] + ", " + pair[1])
+            // }
+            if (props.flag === 1){
+                console.log("SEND BEFORE")
+
+                axios.post('/api/seller/create', formData, {headers: {"Content-Type": "multipart/form-data",}}).then(
+                    window.location.reload()
                 )
             }
-            else if (props.flag === 1){
-                res = await axios.post(
-                    "/api/seller/create",
-                    data,
-                    // {
-                    //     headers: {
-                    //         "Content-Type": "multipart/form-data"
-                    //     }
-                    // }
+            else if (props.flag === 2) {
+                axios.post('/api/seller/modify', formData, {headers: {"Content-Type": "multipart/form-data",}}).then(
+                    window.location.reload()
                 )
             }
             else {
                 alert("ERROR")
-                return
-            }
-            if (res.status === 200) {
-                props.setFlag(false)
-                alert('생성 or 수정 성공')
-                return
+                window.location.reload()
             }
         }
+
         catch (err) {
             console.log(err)
             if (err.response.status === 500) {
                 alert('SERVER INTERNAL ERROR')
-                return
             }
-            if (err.response.status === 400) {
+            else if (err.response.status === 400) {
                 alert(err.response.data.message)
-                return
             }
         }
     }
@@ -125,9 +113,7 @@ function SellerUpdate(props) {
                     <option value={'B'}>경매</option>
                 </select><br></br>
                 <input type='file' accept='image/jpg,image/png,image/jpeg' name='image' onChange={(e) => {
-                    const img = new FormData()
-                    img.append('pimage', e.target.files[0])
-                    handleChange('pimage', img)
+                    setData({...data, pimage:e.target.files[0]})
                 }}></input><br></br>
             </form>
             <button onClick={handleSubmit}>제출</button>

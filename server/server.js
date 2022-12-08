@@ -6,6 +6,11 @@ const { response, application } = require('express')
 const session = require('express-session')
 const multer = require('multer')
 const MySQLStore = require('express-mysql-session')(session)
+const maria = require('mysql2')
+const fs = require('fs')
+
+
+// DB
 const options = {
     host: 'localhost',
     port: 3306,
@@ -13,30 +18,27 @@ const options = {
     password: 'root',
     database: 'webpdb'
 }
-const upload = multer()
-
-const maria = require('mysql2')
 const pool = maria.createPool(options)
 const promisePool = pool.promise()
 var sessionStore = new MySQLStore({}, promisePool)
 
+// multer, bodyParser setting
+const imageDiskStorage = multer.diskStorage({
+    destination: './images',
+    filename: function (req, file, cb) {
+        file.filename = Date.now()
+        cb(null, file.filename + '.jpg')
+    }
+})
+const upload = multer({ storage: imageDiskStorage })
 
 app.use(bodyParser.json())
 
-app.use(express.static(
-    path.join(__dirname, '../client/build')
-))
+// Static
+app.use(express.static(path.join(__dirname, '../client/build')))
+app.use('/api/images/', express.static(__dirname + '/images'));
 
-const id_pw_name_Regex = new RegExp(
-    '^[a-zA-Z0-9._:$!%-]{1,4}$'
-)
-const emailRegex = new RegExp(
-    '^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'
-)
-const phoneRegex = new RegExp(
-    '^01[01]-[0-9]{4,4}-[0-9]{4,4}$'
-)
-
+// Session
 app.use(session({
     key: 'session_cookie_name',
     secret: 'session_cookie_secret',
@@ -47,7 +49,12 @@ app.use(session({
 }))
 
 
+const id_pw_name_Regex = new RegExp('^[a-zA-Z0-9._:$!%-]{1,4}$')
+const emailRegex = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$')
+const phoneRegex = new RegExp('^01[01]-[0-9]{4,4}-[0-9]{4,4}$')
 
+
+// GENERAL
 app.get("/", async (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'))
     return
@@ -61,12 +68,7 @@ app.get("/api/session", async (req, res) => {
     }
     res.status(400).json({ message: 'Not available cookie' })
     return
-}
-)
-
-
-
-
+})
 
 app.post("/api/signup", async (req, res) => {
 
@@ -143,7 +145,7 @@ app.post("/api/login", async (req, res) => {
 
 
 
-
+// ADMIN
 app.get("/api/admin/read", async (req, res) => {
 
     if (req.session.userType !== 'R') {
@@ -164,8 +166,6 @@ app.get("/api/admin/read", async (req, res) => {
         return
     }
 })
-
-
 
 app.post("/api/admin/remove", async (req, res) => {
 
@@ -215,12 +215,15 @@ app.post("/api/admin/modify", async (req, res) => {
     }
     catch (err) {
         console.log(err)
+
         res.status(500)
         return
     }
 })
 
 
+
+// SELLER
 app.get("/api/seller/read", async (req, res) => {
 
     if (req.session.userType !== 'S') {
@@ -241,23 +244,65 @@ app.get("/api/seller/read", async (req, res) => {
     }
 })
 
-app.post("/api/seller/create", upload.any(), async (req,res) => {
+app.post("/api/seller/create", upload.single('pimage'), async (req, res) => {
 
     let data = req.body
+    let imageFile = req.file
+
     if (req.session.userType !== 'S') {
         res.status(500)
         return
     }
-    console.log(data)
-    console.log(data.pimage.file)
-    res.status(500)
-    return
+    console.log(data.name)
+    console.log(imageFile)
+
+    // query
+    try {
+        const queryResult = await promisePool.query(
+            'insert into products (sellerid, name, price, place, ptype, ptext, ptextdetail, pimage) values (?, ?, ?, ?, ?, ?, ?, ?)',
+            [req.session.userId, data.name, data.price, data.place, data.ptype, data.ptext, data.ptextdetail, imageFile.filename]
+        )
+        res.status(200)
+        return
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500)
+        return
+    }
 })
 
-app.post("/api/seller/image", async (req, res) => {
+app.post("/api/seller/modify", upload.single('pimage'), async (req, res) => {
 
+    let data = req.body
+    let imageFile = req.file
+
+    if (req.session.userType !== 'S') {
+        res.status(500)
+        return
+    }
+    console.log(data.name)
+    console.log(imageFile)
+
+    // query
+    try {
+        const queryResult = await promisePool.query(
+            'select pimage from products where pcode=?',
+            [data.pcode]
+        )
+        const queryResult2 = await promisePool.query(
+            'update products set name=?, price=?, place=?, ptype=?, ptext=?, ptextdetail=?, pimage=? where pcode=?'
+            [data.name, data.price, data.place, data.ptype, data.ptext, data.ptextdetail, imageFile.filename, data.pcode]
+        )
+        res.status(200)
+        return
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500)
+        return
+    }
 })
-
 
 
 app.listen(5000, () => { console.log("Server started on port 5000") })
