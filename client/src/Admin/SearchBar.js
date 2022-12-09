@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material';
+import LogoutButton from '../Common/LogoutButton';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -79,6 +80,7 @@ export default function SearchBar(props) {
             />
           </Search>
           <Button variant='contained' color='secondary' onClick={handleButton}>검색</Button>
+          <LogoutButton></LogoutButton>
         </Toolbar>
       </AppBar>
     </Box>

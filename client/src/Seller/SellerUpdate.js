@@ -65,20 +65,17 @@ function SellerUpdate(props) {
             // }
             if (props.flag === 1){
                 console.log("SEND BEFORE")
-
-                axios.post('/api/seller/create', formData, {headers: {"Content-Type": "multipart/form-data",}}).then(
-                    window.location.reload()
-                )
+                const res = await axios.post('/api/seller/create', formData, {headers: {"Content-Type": "multipart/form-data",}})
             }
+
             else if (props.flag === 2) {
-                axios.post('/api/seller/modify', formData, {headers: {"Content-Type": "multipart/form-data",}}).then(
-                    window.location.reload()
-                )
+                console.log("HI")
+                const res = await axios.post('/api/seller/modify', formData, {headers: {"Content-Type": "multipart/form-data",}})
             }
             else {
                 alert("ERROR")
-                window.location.reload()
             }
+            window.location.reload()
         }
 
         catch (err) {

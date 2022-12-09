@@ -70,6 +70,22 @@ app.get("/api/session", async (req, res) => {
     return
 })
 
+app.get("/api/logout", async (req, res) => {
+    if (!req.session.userId) {
+        res.status(400).send()
+    }
+    try {
+        const queryResult = await promisePool.query(
+            'delete from sessions where session_id=?', [req.session.id]
+        )
+        res.status(200).send()
+    }
+    catch(err) {
+        console.log(err)
+        res.status(500).send()
+    }
+})
+
 app.post("/api/signup", async (req, res) => {
 
     let data = req.body
@@ -84,14 +100,14 @@ app.post("/api/signup", async (req, res) => {
             [data.id, data.email, data.phone]
         )
         if (queryResult[0].length) {
-            console.log(queryResult)
+            // console.log(queryResult)
             res.status(400).json({ message: "CONFLICT! SAME ID EXIST" })
             return
         }
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
         return
     }
 
@@ -104,7 +120,7 @@ app.post("/api/signup", async (req, res) => {
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
         return
     }
 })
@@ -133,12 +149,12 @@ app.post("/api/login", async (req, res) => {
         req.session.userType = row.usertype
         req.session.save()
         res.json({ message: "login OK" })
-        console.log("LOGIN Accepted by ID/PW")
+        // console.log("LOGIN Accepted by ID/PW")
         return
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
         return
     }
 })
@@ -149,7 +165,7 @@ app.post("/api/login", async (req, res) => {
 app.get("/api/admin/read", async (req, res) => {
 
     if (req.session.userType !== 'R') {
-        res.status(500)
+        res.status(500).send()
         return
     }
 
@@ -162,7 +178,7 @@ app.get("/api/admin/read", async (req, res) => {
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
         return
     }
 })
@@ -172,7 +188,7 @@ app.post("/api/admin/remove", async (req, res) => {
     let data = req.body
 
     if (req.session.userType !== 'R') {
-        res.status(500)
+        res.status(500).send()
         return
     }
 
@@ -180,12 +196,13 @@ app.post("/api/admin/remove", async (req, res) => {
         const queryResult = await promisePool.query(
             'delete from users where usercode=?', [data.usercode]
         )
-        res.status(200)
+        // console.log(queryResult)
+        res.status(200).send()
         return
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
         return
     }
 })
@@ -194,10 +211,10 @@ app.post("/api/admin/remove", async (req, res) => {
 app.post("/api/admin/modify", async (req, res) => {
 
     let data = req.body
-    console.log(data)
+    // console.log(data)
 
     if (req.session.userType !== 'R') {
-        res.status(500)
+        res.status(500).send()
         return
     }
     if (!id_pw_name_Regex.test(data.id) || !id_pw_name_Regex.test(data.pw) || !id_pw_name_Regex.test(data.name) || !emailRegex.test(data.email) || data.email.length > 30 || !phoneRegex.test(data.phone)) {
@@ -210,13 +227,13 @@ app.post("/api/admin/modify", async (req, res) => {
             'update users set id=?,pw=?,email=?,phone=?,name=?,usertype=? where usercode=?'
             , [data.id, data.pw, data.email, data.phone, data.name, data.usertype, data.usercode]
         )
-        res.status(200)
+        res.status(200).send()
         return
     }
     catch (err) {
         console.log(err)
 
-        res.status(500)
+        res.status(500).send()
         return
     }
 })
@@ -227,7 +244,7 @@ app.post("/api/admin/modify", async (req, res) => {
 app.get("/api/seller/read", async (req, res) => {
 
     if (req.session.userType !== 'S') {
-        res.status(500)
+        res.status(500).send()
         return
     }
     try {
@@ -239,7 +256,7 @@ app.get("/api/seller/read", async (req, res) => {
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
         return
     }
 })
@@ -250,24 +267,24 @@ app.post("/api/seller/create", upload.single('pimage'), async (req, res) => {
     let imageFile = req.file
 
     if (req.session.userType !== 'S') {
-        res.status(500)
+        res.status(500).send()
         return
     }
-    console.log(data.name)
-    console.log(imageFile)
+    // console.log(data.name)
+    // console.log(imageFile)
 
     // query
     try {
         const queryResult = await promisePool.query(
-            'insert into products (sellerid, name, price, place, ptype, ptext, ptextdetail, pimage) values (?, ?, ?, ?, ?, ?, ?, ?)',
-            [req.session.userId, data.name, data.price, data.place, data.ptype, data.ptext, data.ptextdetail, imageFile.filename]
+            'insert into products (sellerid, name, price, place, ptype, ptext, ptextdetail, pimage, pstatus) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [req.session.userId, data.name, data.price, data.place, data.ptype, data.ptext, data.ptextdetail, imageFile.filename, 'O']
         )
-        res.status(200)
+        res.status(200).send()
         return
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
         return
     }
 })
@@ -278,11 +295,11 @@ app.post("/api/seller/modify", upload.single('pimage'), async (req, res) => {
     let imageFile = req.file
 
     if (req.session.userType !== 'S') {
-        res.status(500)
+        res.status(500).send()
         return
     }
-    console.log(data.name)
-    console.log(imageFile)
+    // console.log(data)
+    // console.log(imageFile)
 
     // query
     try {
@@ -291,15 +308,39 @@ app.post("/api/seller/modify", upload.single('pimage'), async (req, res) => {
             [data.pcode]
         )
         const queryResult2 = await promisePool.query(
-            'update products set name=?, price=?, place=?, ptype=?, ptext=?, ptextdetail=?, pimage=? where pcode=?'
+            'update products set name=?,price=?,place=?,ptype=?,ptext=?,ptextdetail=?,pimage=? where pcode=?',
             [data.name, data.price, data.place, data.ptype, data.ptext, data.ptextdetail, imageFile.filename, data.pcode]
         )
-        res.status(200)
+        res.status(200).send()
         return
     }
     catch (err) {
         console.log(err)
-        res.status(500)
+        res.status(500).send()
+        return
+    }
+})
+
+app.post("/api/seller/remove", async (req, res) => {
+
+    let data = req.body
+    if (req.session.userType !== 'S') {
+        res.status(500).send()
+        return
+    }
+    console.log(data)
+
+    // query
+    try {
+        const queryResult = await promisePool.query(
+            'delete from products where pcode=?', [data.productcode]
+        )
+        res.status(200).send()
+        return
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send()
         return
     }
 })

@@ -63,6 +63,9 @@ export default function AdminPage(props) {
                 alert("removed.")
                 window.location.reload()
             }
+            else {
+                console.log("FUCK")
+            }
         }
         catch (err) {
             alert(err)

@@ -1,10 +1,15 @@
 -- SQLBook: Code
--- Active: 1669171733588@@127.0.0.1@3306@webpdb
+-- Active: 1669134959110@@127.0.0.1@3306@webpdb
 use webpdb;
 
 DROP TABLE users;
 DROP TABLE sessions;
 DROp TABLE products;
+
+TRUNCATE TABLE users;
+TRUNCATE TABLE sessions;
+TRUNCATE TABLE products;
+
 
 create table if NOT exists users (
     usercode INT AUTO_INCREMENT NOT NULL,
@@ -33,11 +38,6 @@ create table if NOT exists products (
     pimage VARCHAR(50) NOT NULL,
     plikes INT NOT NULL DEFAULT 0,
     ptime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    pstatus CHAR(1) NOT NULL,
     PRIMARY KEY(pcode)
 );
-
-
-TRUNCATE TABLE products;
-
-INSERT INTO products (sellerid, name, price, place, ptype, ptext, ptextdetail, pimage)
-    VALUES ('qwer', 'product_1', 10000, 'Suwon', 'F', 'adidas handbag', 'sakdfjlkasdjflkasfdjkljdsa', 'p1.jpg');

@@ -36,7 +36,7 @@ function SellerPage(props) {
         ptext: '',
         ptextdetail: '',
         pimage: '',
-        pcode: -1
+        pcode: -1,
     })
 
     const getData = async (e) => {
@@ -46,6 +46,7 @@ function SellerPage(props) {
             )
             if (res.status === 200) {
                 setData(res.data[0])
+                console.log(res.data[0])
             }
             return
         }
@@ -56,15 +57,15 @@ function SellerPage(props) {
     }
 
     const removeAxios = async (removeCode) => {
+        console.log(removeCode)
+        const removeJson = {productcode: removeCode}
         try {
             const res = await axios.post(
                 "/api/seller/remove",
-                { usercode: removeCode },
+                removeJson,
             )
-            if (res.status === 200) {
-                alert("removed.")
-                window.location.reload()
-            }
+            alert("removed.")
+            window.location.reload()
         }
         catch (err) {
             alert(err)
@@ -90,7 +91,7 @@ function SellerPage(props) {
                         ptext: '',
                         ptextdetail: '',
                         pimage: '',
-                        pcode: -1
+                        pcode: -1,
                     })
                     setModifyFlag(1)
                 }}
@@ -106,11 +107,12 @@ function SellerPage(props) {
                             <StyledTableCell width='10%'>가격</StyledTableCell>
                             <StyledTableCell width='10%'>거래 장소</StyledTableCell>
                             <StyledTableCell width='10%'>판매 형식</StyledTableCell>
+                            <StyledTableCell width='10%'>판매 상태</StyledTableCell>
                             <StyledTableCell width='10%'>간단 설명</StyledTableCell>
                             <StyledTableCell width='10%'>구매 희망 수</StyledTableCell>
                             <StyledTableCell width='10%'>최종 수정 시간</StyledTableCell>
-                            <StyledTableCell width='10%'>수정</StyledTableCell>
-                            <StyledTableCell width='10%'>삭제</StyledTableCell>
+                            <StyledTableCell width='5%'>수정</StyledTableCell>
+                            <StyledTableCell width='5%'>삭제</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -129,10 +131,11 @@ function SellerPage(props) {
                                 <TableCell width='10%'>{row.price + '원'}</TableCell>
                                 <TableCell width='10%'>{row.place}</TableCell>
                                 <TableCell width='10%'>{row.ptype === 'F' ? '고정' : '경매'}</TableCell>
+                                <TableCell width='10%'>{row.pstatus === 'O' ? '판매중' : '판매완료'}</TableCell>
                                 <TableCell width='10%'>{row.ptext}</TableCell>
                                 <TableCell width='10%'>{row.plikes}</TableCell>
                                 <TableCell width='10%'>{row.ptime}</TableCell>
-                                <TableCell width="10%"><Button variant='contained' color='success' onClick={(e) => {
+                                <TableCell width="5%"><Button variant='contained' color='success' onClick={(e) => {
                                     setModifyFlag(2)
                                     setDefaultForm({
                                         name: row.name,
@@ -141,11 +144,11 @@ function SellerPage(props) {
                                         ptype: row.ptype,
                                         ptext: row.ptext,
                                         ptextdetail: row.ptextdetail,
-                                        pimage: row.pimage,
-                                        pcode: row.pcode
+                                        pimage: undefined,
+                                        pcode: row.pcode,
                                     })
-                                }}>수정</Button></TableCell>
-                                <TableCell width="10%"><Button variant='contained' color='error' onClick={(e) => { removeAxios(row.usercode) }} >삭제</Button></TableCell>
+                                }} disabled={row.pstatus === 'O' ? false : true}>수정</Button></TableCell>
+                                <TableCell width="5%"><Button variant='contained' color='error' onClick={(e) => { removeAxios(row.pcode) }} >삭제</Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
