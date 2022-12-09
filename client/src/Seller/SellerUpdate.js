@@ -81,12 +81,12 @@ function SellerUpdate(props) {
             // }
             if (props.flag === 1){
                 console.log("SEND BEFORE")
-                const res = await axios.post('/api/seller/create', formData, {headers: {"Content-Type": "multipart/form-data",}})
+                await axios.post('/api/seller/create', formData, {headers: {"Content-Type": "multipart/form-data",}})
             }
 
             else if (props.flag === 2) {
                 console.log("HI")
-                const res = await axios.post('/api/seller/modify', formData, {headers: {"Content-Type": "multipart/form-data",}})
+                await axios.post('/api/seller/modify', formData, {headers: {"Content-Type": "multipart/form-data",}})
             }
             else {
                 alert("ERROR")

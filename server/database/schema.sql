@@ -1,18 +1,22 @@
 -- SQLBook: Code
 -- Active: 1669134959110@@127.0.0.1@3306@webpdb
-use webpdb;
+/* use webpdb; */
 
 DROP TABLE users;
 DROP TABLE sessions;
 DROp TABLE products;
 DROP TABLE bidlogs;
 DROP TABLE likelogs;
-
+/* 
 TRUNCATE TABLE users;
 TRUNCATE TABLE sessions;
 TRUNCATE TABLE products;
 TRUNCATE TABLE bidlogs;
-TRUNCATE TABLE likelogs;
+TRUNCATE TABLE likelogs; */
+
+/* INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('qwer', 'qwer', 'qwer@asdf.com', '010-1111-1111', 'qwe', 'S');
+INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('zxcv', 'zxcv', 'zxcv@asdf.com', '010-1111-1112', 'zxc', 'S');
+INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('asdf', 'asdf', 'asdf@qwer.com', '010-2222-2222', 'asd', 'B'); */
 
 create table if NOT exists users (
     usercode INT AUTO_INCREMENT NOT NULL,
@@ -24,11 +28,7 @@ create table if NOT exists users (
     usertype CHAR(1) NOT NULL,
     PRIMARY KEY(usercode)
 );
-
 INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('root', 'root', 'root@admin.com', '010-0000-0000', 'roo', 'R');
-INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('qwer', 'qwer', 'qwer@asdf.com', '010-1111-1111', 'qwe', 'S');
-INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('zxcv', 'zxcv', 'zxcv@asdf.com', '010-1111-1112', 'zxc', 'S');
-INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('asdf', 'asdf', 'asdf@qwer.com', '010-2222-2222', 'asd', 'B');
 
 create table if NOT exists products (
     pcode INT AUTO_INCREMENT NOT NULL,
@@ -57,20 +57,14 @@ create table if NOT exists bidlogs (
     PRIMARY KEY(logid)
 );
 
-create table if NOT exists likelogs (
+/* create table if NOT exists likelogs (
     likeid INT AUTO_INCREMENT NOT NULL,
     pcode INT NOT NULL,
     pbuyer VARCHAR(4) NOT NULL,
     PRIMARY KEY(likeid)
-);
+); */
 
-/* 구매 복구용 */
-update products set pstatus='O', pbuyer=NULL where pcode=2;
+/* update products set pstatus='O', pbuyer=NULL where pcode=2;
 update products set pstatus='O', pbuyer=NULL where pcode=3;
-
-/* 경매 복구용 */
 TRUNCATE TABLE bidlogs;
-
-
-/* 찜하기 복구용 */
-TRUNCATE TABLE likelogs;
+TRUNCATE TABLE likelogs; */

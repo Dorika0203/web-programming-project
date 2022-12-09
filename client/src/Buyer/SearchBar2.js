@@ -55,8 +55,8 @@ export default function SearchBar2(props) {
         else {
             let high = Infinity
             let low = -Infinity
-            if(!typeof(keywordPriceHigh) === 'string' || !(keywordPriceHigh.length == 0)) high = keywordPriceHigh
-            if(!typeof(keywordPriceLow) === 'string' || !(keywordPriceLow.length == 0)) low = keywordPriceLow
+            if(!typeof(keywordPriceHigh) === 'string' || !(keywordPriceHigh.length === 0)) high = keywordPriceHigh
+            if(!typeof(keywordPriceLow) === 'string' || !(keywordPriceLow.length === 0)) low = keywordPriceLow
             props.setKeyword({
                 kName: keywordName,
                 kSeller: keywordSeller,

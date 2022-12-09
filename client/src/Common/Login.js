@@ -65,10 +65,11 @@ function LoginPage() {
                     <input type="password" placeholder="password" onChange={(e) => { handleChange('pw', e.target.value) }} />
                     <button className="btn" onClick={handleSubmit}>Login</button>
                     <div className='linkbox'>
-                        <a className="forgot_signup" onClick={() => {
+                        <button className="forgot_signup" onClick={(e) => {
+                            e.preventDefault()
                             setSignupFlag(true)
                             return false
-                        }}>No Account?</a>
+                        }}>No Account?</button>
                     </div>
                 </form>
             </div>

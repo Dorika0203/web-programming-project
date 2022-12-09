@@ -11,7 +11,7 @@ function Signup(props) {
       email: '',
       phone: '',
       name: '',
-      usertype: 'b'
+      usertype: 'B'
     })
   
     const id_pw_name_Regex = new RegExp(

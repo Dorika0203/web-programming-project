@@ -112,7 +112,7 @@ function BuyerPage(props) {
                                 key={row.pcode}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell width='10%'><img src={window.location.href + 'api/images/' + row.pimage} width='100' height='100'></img></TableCell>
+                                <TableCell width='10%'><img src={window.location.href + 'api/images/' + row.pimage} width='100' height='100' alt={window.location.href + 'api/images/' + row.pimage}></img></TableCell>
                                 <TableCell width='10%'>{row.name}</TableCell>
                                 <TableCell width='10%'>{row.price + '원'}</TableCell>
                                 <TableCell width='10%'>{row.place}</TableCell>

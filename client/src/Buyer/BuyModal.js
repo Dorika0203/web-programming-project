@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 import axios from 'axios'
 import { Button } from '@mui/material'
 import InputBase from '@mui/material/InputBase';
-import { styled, alpha } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',

@@ -63,7 +63,7 @@ function SellerPage(props) {
         console.log(removeCode)
         const removeJson = { productcode: removeCode }
         try {
-            const res = await axios.post(
+            await axios.post(
                 "/api/seller/remove",
                 removeJson,
             )
@@ -83,7 +83,7 @@ function SellerPage(props) {
     return (
         <div>
             <Stack direction="row">
-                <SearchBar setShowRows={setKeyword} usage={'어서오세요, ' + '판매자' + '님'}></SearchBar>
+                <SearchBar setShowRows={setKeyword} usage={'어서오세요, 판매자님'}></SearchBar>
                 <Button variant='contained' color='warning' onClick={(e) => {
                     e.preventDefault();
                     setDefaultForm({
@@ -130,7 +130,7 @@ function SellerPage(props) {
                                 key={row.pcode}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell width='10%'><img src={window.location.href + 'api/images/' + row.pimage} width='100' height='100'></img></TableCell>
+                                <TableCell width='10%'><img src={window.location.href + 'api/images/' + row.pimage} width='100' height='100' alt={window.location.href + 'api/images/' + row.pimage}></img></TableCell>
                                 <TableCell width='10%'>{row.name}</TableCell>
                                 <TableCell width='10%'>{row.price + '원'}</TableCell>
                                 <TableCell width='10%'>{row.place}</TableCell>

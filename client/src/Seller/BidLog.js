@@ -42,7 +42,7 @@ const exitBidding = async (exitCode) => {
     console.log(exitCode)
     const exitJson = {pcode: exitCode}
     try {
-        const res = await axios.post(
+        await axios.post(
             "/api/seller/biddone",
             exitJson,
         )
@@ -108,7 +108,7 @@ function BidLogModal(props) {
             <Button variant='contained' color='secondary' onClick={(e) => {
                 e.preventDefault()
                 exitBidding(props.pcode)
-            }}>경매 종료</Button>
+            }} disabled={bidLog.length === 0 ? true : false}>경매 종료</Button>
         </Modal>
     )
 }
