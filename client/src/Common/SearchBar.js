@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material';
-import LogoutButton from '../Common/LogoutButton';
+import LogoutButton from './LogoutButton';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',

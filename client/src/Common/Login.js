@@ -26,6 +26,8 @@ function LoginPage() {
 
     const handleSubmit = async (e) => {
 
+        e.preventDefault()
+
         if (!id_pw_Regex.test(data.id)) {
             alert('아디 규격 안맞음. 1글자 이상 4글자 이하의 알파벳 or 숫자 or ._:$!%-')
             return
@@ -40,17 +42,17 @@ function LoginPage() {
                 "/api/login",
                 data,
             )
+            if(res.status === 200) alert('로그인 성공.')
         }
         catch (err) {
             if (err.response.status === 500) {
                 alert('SERVER INTERNAL ERROR')
-                return
             }
-            if (err.response.status === 400) {
+            else if (err.response.status === 400) {
                 alert(err.response.data.message)
-                return
             }
         }
+        window.location.reload()
     }
 
     return (
@@ -63,7 +65,6 @@ function LoginPage() {
                     <input type="password" placeholder="password" onChange={(e) => { handleChange('pw', e.target.value) }} />
                     <button className="btn" onClick={handleSubmit}>Login</button>
                     <div className='linkbox'>
-                        <a className="forgot_signup">Forgot Password?</a><br></br>
                         <a className="forgot_signup" onClick={() => {
                             setSignupFlag(true)
                             return false

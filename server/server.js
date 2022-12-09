@@ -148,8 +148,7 @@ app.post("/api/login", async (req, res) => {
         req.session.userCode = row.usercode
         req.session.userType = row.usertype
         req.session.save()
-        res.json({ message: "login OK" })
-        // console.log("LOGIN Accepted by ID/PW")
+        res.status(200).json({ message: "login OK" })
         return
     }
     catch (err) {
@@ -333,7 +332,8 @@ app.post("/api/seller/remove", async (req, res) => {
     // query
     try {
         const queryResult = await promisePool.query(
-            'delete from products where pcode=?', [data.productcode]
+            'delete from products where pcode=?',
+            [data.productcode]
         )
         res.status(200).send()
         return
@@ -342,6 +342,32 @@ app.post("/api/seller/remove", async (req, res) => {
         console.log(err)
         res.status(500).send()
         return
+    }
+})
+
+
+
+// Buyer
+app.get("/api/buyer/read", async (req, res) => {
+
+    let data = req.body
+    if(req.session.userType != 'B') {
+        res.status(500).send()
+        return
+    }
+    console.log(data)
+
+    try {
+        const queryResult = await promisePool.query(
+            'select * from products where pstatus=?',
+            ['O']
+        )
+        console.log(queryResult)
+        res.status(200).json(queryResult)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send()
     }
 })
 

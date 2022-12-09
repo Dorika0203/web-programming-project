@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -9,7 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Stack } from '@mui/material';
-import SearchBar from '../Admin/SearchBar';
+import SearchBar from '../Common/SearchBar';
 import SellerUpdate from './SellerUpdate';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -80,7 +80,7 @@ function SellerPage(props) {
     return (
         <div>
             <Stack direction="row">
-                <SearchBar setShowRows={setKeyword} usage={'어서오세요, ' + 'name' + '님 (판매자)'}></SearchBar>
+                <SearchBar setShowRows={setKeyword} usage={'어서오세요, ' + '판매자' + '님'}></SearchBar>
                 <Button variant='contained' color='warning' onClick={(e) => {
                     e.preventDefault();
                     setDefaultForm({
@@ -136,6 +136,7 @@ function SellerPage(props) {
                                 <TableCell width='10%'>{row.plikes}</TableCell>
                                 <TableCell width='10%'>{row.ptime}</TableCell>
                                 <TableCell width="5%"><Button variant='contained' color='success' onClick={(e) => {
+                                    e.preventDefault()
                                     setModifyFlag(2)
                                     setDefaultForm({
                                         name: row.name,
@@ -148,7 +149,7 @@ function SellerPage(props) {
                                         pcode: row.pcode,
                                     })
                                 }} disabled={row.pstatus === 'O' ? false : true}>수정</Button></TableCell>
-                                <TableCell width="5%"><Button variant='contained' color='error' onClick={(e) => { removeAxios(row.pcode) }} >삭제</Button></TableCell>
+                                <TableCell width="5%"><Button variant='contained' color='error' onClick={(e) => { e.preventDefault(); removeAxios(row.pcode) }} >삭제</Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

@@ -4,6 +4,21 @@ import axios from 'axios'
 
 function SellerUpdate(props) {
 
+    const style = {
+        overlay: {
+        },
+        content: {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4
+        }
+      }
 
     const [data, setData] = useState({
         name: '',
@@ -95,7 +110,7 @@ function SellerUpdate(props) {
     }, [props.default])
 
     return (
-        <Modal
+        <Modal style={style}
             isOpen={props.flag === 0 ? false : true}
             ariaHideApp={false}>
 

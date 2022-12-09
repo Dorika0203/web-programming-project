@@ -24,6 +24,7 @@ create table if NOT exists users (
 
 INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('root', 'root', 'root@admin.com', '010-0000-0000', 'roo', 'R');
 INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('qwer', 'qwer', 'qwer@asdf.com', '010-1111-1111', 'qwe', 'S');
+INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('zxcv', 'zxcv', 'zxcv@asdf.com', '010-1111-1112', 'zxc', 'S');
 INSERT INTO users (id, pw, email, phone, name, usertype) VALUES ('asdf', 'asdf', 'asdf@qwer.com', '010-2222-2222', 'asd', 'B');
 
 create table if NOT exists products (
