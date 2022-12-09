@@ -367,6 +367,44 @@ app.get('/api/seller/bidlog', async(req, res) => {
     }
 })
 
+app.post('/api/seller/biddone', async (req, res) => {
+    let data = req.body
+    if(req.session.userType != 'S') {
+        res.status(500).send()
+        return
+    }
+    console.log(data)
+
+    try {
+        // GET LAST BIDDER
+        const queryResult = await promisePool.query(
+            'select * from bidlogs where pcode=?', [data.pcode]
+        )
+        let log = queryResult[0]
+        console.log(log)
+        let max = log[0].updateprice
+        let maxbuyer = log[0].pbuyer
+
+        log.forEach(element => {
+            if(element.updateprice > max) {
+                max = element.updateprice
+                maxbuyer = element.pbuyer
+            }
+        });
+        console.log(max, maxbuyer)
+
+        const queryResult2 = await promisePool.query(
+            'update products set pstatus=?, pbuyer=? where pcode=?',
+            ['S', maxbuyer, data.pcode]
+        )
+        res.status(200).send()
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send()
+    }
+})
+
 
 
 // Buyer
@@ -435,7 +473,7 @@ app.post("/api/buyer/buy", async (req, res) => {
                 res.status(400).json({message: '경매 제안 가격은 현재 가격보다 높아야 합니다.'})
                 return
             }
-            
+
             const queryResult2 = await promisePool.query(
                 'insert into bidlogs (pcode, pbuyer, prevprice, updateprice) values (?, ?, ?, ?)',
                 [data.pcode, req.session.userId, prevPrice, data.price]
@@ -452,6 +490,26 @@ app.post("/api/buyer/buy", async (req, res) => {
             console.log(err)
             res.status(500).send()
         }
+    }
+})
+
+app.get('/api/buyer/buylog', async (req,res) => {
+
+    if(req.session.userType != 'B') {
+        res.status(500).send()
+        return
+    }
+    
+    try {
+        const queryResult = await promisePool.query(
+            'select * from products where pbuyer=?', [req.session.userId]
+        )
+        console.log(queryResult[0])
+        res.status(200).json(queryResult)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send()
     }
 })
 

@@ -38,6 +38,22 @@ const style = {
     }
 }
 
+const exitBidding = async (exitCode) => {
+    console.log(exitCode)
+    const exitJson = {pcode: exitCode}
+    try {
+        const res = await axios.post(
+            "/api/seller/biddone",
+            exitJson,
+        )
+        alert('Bidding Done')
+    }
+    catch (err) {
+        alert (err)
+    }
+    window.location.reload()
+}
+
 function BidLogModal(props) {
 
     const [bidLog, setbidLog] = useState([])
@@ -65,7 +81,7 @@ function BidLogModal(props) {
     }, [props.pcode])
 
     return (
-        <Modal style={style} isOpen={props.flag} ariaHideApp={false} onAfterOpen={props.onAfter}>
+        <Modal style={style} isOpen={props.flag} ariaHideApp={false}>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 200 }} aria-label="simple table">
                     <TableHead>
@@ -89,6 +105,10 @@ function BidLogModal(props) {
                 </Table>
             </TableContainer>
             <Button variant='contained' color='error' onClick={(e) => {e.preventDefault(); props.setFlag(false)}}>닫기</Button>
+            <Button variant='contained' color='secondary' onClick={(e) => {
+                e.preventDefault()
+                exitBidding(props.pcode)
+            }}>경매 종료</Button>
         </Modal>
     )
 }

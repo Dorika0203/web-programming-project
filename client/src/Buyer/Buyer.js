@@ -8,10 +8,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import SearchBar2 from './SearchBar2';
 import DetailModal from './DetailModal';
 import BuyModal from './BuyModal';
+import ShoppingList from './ShoppingList';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -37,6 +38,7 @@ function BuyerPage(props) {
         pcode: 0,
         price: -2
     })
+    const [shopFlag, setShopFlag] = useState(false)
 
     const setKeyword = (arg) => {
         setKeywordName(arg.kName)
@@ -65,8 +67,14 @@ function BuyerPage(props) {
 
     return (
         <div>
-            <SearchBar2 setKeyword={setKeyword}></SearchBar2>
+            <Stack direction='row'>
+                <SearchBar2 setKeyword={setKeyword}></SearchBar2>
+                <Button variant='contained' color='warning' onClick={(e) => {
+                    setShopFlag(true)
+                }}>구매 목록 보기</Button>
+            </Stack>
             <DetailModal flag={detailFlag} setFlag={setDetailFlag} message={detailMessage}></DetailModal>
+            <ShoppingList flag={shopFlag} setFlag={setShopFlag}></ShoppingList>
             <BuyModal flag={buyFlag} setFlag={setbuyFlag} buyInfo={buyInfo}></BuyModal>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">

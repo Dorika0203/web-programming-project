@@ -68,11 +68,11 @@ function SellerPage(props) {
                 removeJson,
             )
             alert("removed.")
-            window.location.reload()
         }
         catch (err) {
             alert(err)
         }
+        window.location.reload()
     }
 
     useEffect(() => {
@@ -113,9 +113,9 @@ function SellerPage(props) {
                             <StyledTableCell width='10%'>판매 형식</StyledTableCell>
                             <StyledTableCell width='10%'>판매 상태</StyledTableCell>
                             <StyledTableCell width='10%'>간단 설명</StyledTableCell>
-                            <StyledTableCell width='10%'>구매 희망 수</StyledTableCell>
+                            <StyledTableCell width='5%'>구매 희망 수</StyledTableCell>
                             <StyledTableCell width='10%'>최종 수정 시간</StyledTableCell>
-                            <StyledTableCell width='5%'>수정</StyledTableCell>
+                            <StyledTableCell width='10%'>수정</StyledTableCell>
                             <StyledTableCell width='5%'>삭제</StyledTableCell>
                         </TableRow>
                     </TableHead>
@@ -138,25 +138,27 @@ function SellerPage(props) {
                                     setbidPcode(row.pcode)
                                     setbidFlag(true)
                                     // onAfterBidLogModalOpen()
-                                }}>경매</Button>}</TableCell>
+                                }} disabled={row.pstatus === 'O' ? false : true}>경매</Button>}</TableCell>
                                 <TableCell width='10%'>{row.pstatus === 'O' ? '판매중' : '판매완료'}</TableCell>
                                 <TableCell width='10%'>{row.ptext}</TableCell>
-                                <TableCell width='10%'>{row.plikes}</TableCell>
+                                <TableCell width='5%'>{row.plikes}</TableCell>
                                 <TableCell width='10%'>{row.ptime}</TableCell>
-                                <TableCell width="5%"><Button variant='contained' color='success' onClick={(e) => {
+                                <TableCell width="10%"><Button variant='contained' color='success' onClick={(e) => {
                                     e.preventDefault()
-                                    setModifyFlag(2)
-                                    setDefaultForm({
-                                        name: row.name,
-                                        price: row.price,
-                                        place: row.place,
-                                        ptype: row.ptype,
-                                        ptext: row.ptext,
-                                        ptextdetail: row.ptextdetail,
-                                        pimage: undefined,
-                                        pcode: row.pcode,
-                                    })
-                                }} disabled={row.pstatus === 'O' ? false : true}>수정</Button></TableCell>
+                                    if(row.ptype === 'F') {
+                                        setModifyFlag(2)
+                                        setDefaultForm({
+                                            name: row.name,
+                                            price: row.price,
+                                            place: row.place,
+                                            ptype: row.ptype,
+                                            ptext: row.ptext,
+                                            ptextdetail: row.ptextdetail,
+                                            pimage: undefined,
+                                            pcode: row.pcode,
+                                        })
+                                    }
+                                }} disabled={row.pstatus === 'O' && row.ptype === 'F' ? false : true}>수정</Button></TableCell>
                                 <TableCell width="5%"><Button variant='contained' color='error' onClick={(e) => {
                                     e.preventDefault(); removeAxios(row.pcode) }} disabled={row.pstatus === 'O' ? false : true}>삭제</Button></TableCell>
                             </TableRow>
