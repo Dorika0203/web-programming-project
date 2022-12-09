@@ -32,13 +32,13 @@ function SellerUpdate(props) {
     })
 
     const name_place_ptext_Regex = new RegExp(
-        '^[a-zA-Z0-9._:$!%-]{4,50}$'
+        '^.{4,50}$'
     )
     const ptype_Regex = new RegExp(
         '^[FB]$'
     )
     const ptext_detail_Regex = new RegExp(
-        '^[a-zA-Z0-9._:$!%-]{0,200}$'
+        '^.{0,200}$'
     )
 
     const handleChange = (key, value) => {
@@ -51,6 +51,7 @@ function SellerUpdate(props) {
             !name_place_ptext_Regex.test(data.ptext) ||
             !name_place_ptext_Regex.test(data.place)) {
             alert('상품이름, 상품 간단 설명, 상품 거래장소는 4글자 이상 50글자 이하로')
+            console.log(data.name, data.ptext, data.place)
             return
         }
         if (!ptype_Regex.test(data.ptype)) {
@@ -119,7 +120,7 @@ function SellerUpdate(props) {
                 <input type="number" name='price' placeholder="가격 0원이상 1억미만" onChange={(e) => handleChange('price', e.target.value)} defaultValue={props.default.price} /><br></br>
                 <input type="text" name='place' placeholder="거래 장소 4~50글자" onChange={(e) => handleChange('place', e.target.value)} defaultValue={props.default.place} /><br></br>
                 <input type="text" name='ptext' placeholder="간단 설명 4~50글자" onChange={(e) => handleChange('ptext', e.target.value)} defaultValue={props.default.ptext} /><br></br>
-                <input type="text" name='ptextdetail' placeholder="상세 설명 0~200글자" onChange={(e) => handleChange('ptextdetail', e.target.value)} defaultValue={props.default.ptextdetail} /><br></br>
+                <textarea name='ptextdetail' placeholder="상세 설명 0~200글자" rows={8} cols={25} onChange={(e) => handleChange('ptextdetail', e.target.value)} defaultValue={props.default.ptextdetail} /><br></br>
                 <select name='text' onChange={(e) => handleChange('ptype', e.target.value)} defaultValue={props.default.ptype}>
                     <option value={'F'}>고정</option>
                     <option value={'B'}>경매</option>

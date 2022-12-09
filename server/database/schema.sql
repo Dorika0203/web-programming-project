@@ -5,11 +5,14 @@ use webpdb;
 DROP TABLE users;
 DROP TABLE sessions;
 DROp TABLE products;
+DROP TABLE bidlogs;
+DROP TABLE likelogs;
 
 TRUNCATE TABLE users;
 TRUNCATE TABLE sessions;
 TRUNCATE TABLE products;
-
+TRUNCATE TABLE bidlogs;
+TRUNCATE TABLE likelogs;
 
 create table if NOT exists users (
     usercode INT AUTO_INCREMENT NOT NULL,
@@ -40,5 +43,34 @@ create table if NOT exists products (
     plikes INT NOT NULL DEFAULT 0,
     ptime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
     pstatus CHAR(1) NOT NULL,
+    pbuyer VARCHAR(4),
     PRIMARY KEY(pcode)
 );
+
+create table if NOT exists bidlogs (
+    logid INT AUTO_INCREMENT NOT NULL,
+    pcode INT NOT NULL,
+    pbuyer VARCHAR(4) NOT NULL,
+    prevprice INT NOT NULL,
+    updateprice INT NOT NULL,
+    ptime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY(logid)
+);
+
+create table if NOT exists likelogs (
+    likeid INT AUTO_INCREMENT NOT NULL,
+    pcode INT NOT NULL,
+    pbuyer VARCHAR(4) NOT NULL,
+    PRIMARY KEY(likeid)
+);
+
+/* 구매 복구용 */
+update products set pstatus='O', pbuyer=NULL where pcode=2;
+update products set pstatus='O', pbuyer=NULL where pcode=3;
+
+/* 경매 복구용 */
+TRUNCATE TABLE bidlogs;
+
+
+/* 찜하기 복구용 */
+TRUNCATE TABLE likelogs;

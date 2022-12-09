@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import { Button, Stack } from '@mui/material';
 import SearchBar from '../Common/SearchBar';
 import SellerUpdate from './SellerUpdate';
+import BidLogModal from './BidLog';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -36,8 +37,10 @@ function SellerPage(props) {
         ptext: '',
         ptextdetail: '',
         pimage: '',
-        pcode: -1,
+        pcode: 0,
     })
+    const [bidFlag, setbidFlag] = useState(false)
+    const [bidPcode, setbidPcode] = useState(-1)
 
     const getData = async (e) => {
         try {
@@ -58,7 +61,7 @@ function SellerPage(props) {
 
     const removeAxios = async (removeCode) => {
         console.log(removeCode)
-        const removeJson = {productcode: removeCode}
+        const removeJson = { productcode: removeCode }
         try {
             const res = await axios.post(
                 "/api/seller/remove",
@@ -98,6 +101,7 @@ function SellerPage(props) {
                 >추가</Button>
             </Stack>
             <SellerUpdate flag={modifyFlag} setFlag={setModifyFlag} default={defaultForm}></SellerUpdate>
+            <BidLogModal flag={bidFlag} setFlag={setbidFlag} pcode={bidPcode}></BidLogModal>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -130,7 +134,11 @@ function SellerPage(props) {
                                 <TableCell width='10%'>{row.name}</TableCell>
                                 <TableCell width='10%'>{row.price + '원'}</TableCell>
                                 <TableCell width='10%'>{row.place}</TableCell>
-                                <TableCell width='10%'>{row.ptype === 'F' ? '고정' : '경매'}</TableCell>
+                                <TableCell width='10%'>{row.ptype === 'F' ? '고정' : <Button variant='contained' color='secondary' onClick={(e) => {
+                                    setbidPcode(row.pcode)
+                                    setbidFlag(true)
+                                    // onAfterBidLogModalOpen()
+                                }}>경매</Button>}</TableCell>
                                 <TableCell width='10%'>{row.pstatus === 'O' ? '판매중' : '판매완료'}</TableCell>
                                 <TableCell width='10%'>{row.ptext}</TableCell>
                                 <TableCell width='10%'>{row.plikes}</TableCell>
@@ -149,7 +157,8 @@ function SellerPage(props) {
                                         pcode: row.pcode,
                                     })
                                 }} disabled={row.pstatus === 'O' ? false : true}>수정</Button></TableCell>
-                                <TableCell width="5%"><Button variant='contained' color='error' onClick={(e) => { e.preventDefault(); removeAxios(row.pcode) }} >삭제</Button></TableCell>
+                                <TableCell width="5%"><Button variant='contained' color='error' onClick={(e) => {
+                                    e.preventDefault(); removeAxios(row.pcode) }} disabled={row.pstatus === 'O' ? false : true}>삭제</Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

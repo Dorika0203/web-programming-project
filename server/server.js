@@ -345,6 +345,28 @@ app.post("/api/seller/remove", async (req, res) => {
     }
 })
 
+app.get('/api/seller/bidlog', async(req, res) => {
+    let data = req.query
+    if(req.session.userType != 'S') {
+        res.status(500).send()
+        return
+    }
+
+    //query
+    try {
+        const queryResult = await promisePool.query(
+            'select * from bidlogs where pcode=?',
+            [data.pcode]
+        )
+        res.status(200).json(queryResult)
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send()
+        return
+    }
+})
+
 
 
 // Buyer
@@ -362,12 +384,74 @@ app.get("/api/buyer/read", async (req, res) => {
             'select * from products where pstatus=?',
             ['O']
         )
-        console.log(queryResult)
+        // console.log(queryResult)
         res.status(200).json(queryResult)
     }
     catch (err) {
         console.log(err)
         res.status(500).send()
+    }
+})
+
+app.post("/api/buyer/buy", async (req, res) => {
+    let data = req.body
+    if(req.session.userType != 'B') {
+        res.status(500).send()
+        return
+    }
+
+    // 구매인 경우
+    if(data.price === -1) {
+        try {
+            const queryResult = await promisePool.query(
+                'select * from products where (pstatus=? and pcode=?)',
+                ['O', data.pcode]
+            )
+            if(queryResult[0].length != 1) {
+                res.status(500).send()
+            }
+            const queryResult2 = await promisePool.query(
+                'update products set pstatus=?,pbuyer=? where pcode=?', ['S', req.session.userId,data.pcode]
+            )
+            res.status(200).send()
+        }
+        catch (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+    }
+
+    // 경매 가격 제안인 경우
+    else {
+        try {
+            const queryResult = await promisePool.query(
+                'select * from products where (pcode=? and ptype=?)',
+                [data.pcode, 'B']
+            )
+            if(queryResult[0].length != 1) {res.status(500).send()}
+
+            let prevPrice = queryResult[0][0].price
+            if(prevPrice >= data.price) {
+                res.status(400).json({message: '경매 제안 가격은 현재 가격보다 높아야 합니다.'})
+                return
+            }
+            
+            const queryResult2 = await promisePool.query(
+                'insert into bidlogs (pcode, pbuyer, prevprice, updateprice) values (?, ?, ?, ?)',
+                [data.pcode, req.session.userId, prevPrice, data.price]
+            )
+
+            const queryResult3 = await promisePool.query(
+                'update products set price=? where pcode=?',
+                [data.price, data.pcode]
+            )
+
+            res.status(200).send()
+        }
+        catch (err) {
+            console.log(err)
+            res.status(500).send()
+        }
     }
 })
 

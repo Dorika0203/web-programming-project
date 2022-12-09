@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { styled } from '@mui/material/styles';
-import LogoutButton from '../Common/LogoutButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -11,6 +10,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import SearchBar2 from './SearchBar2';
+import DetailModal from './DetailModal';
+import BuyModal from './BuyModal';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -29,6 +30,13 @@ function BuyerPage(props) {
     const [keywordName, setKeywordName] = useState("")
     const [keywordSeller, setKeywordSeller] = useState("")
     const [keywordPrice, setKeywordPrice] = useState([-Infinity, Infinity])
+    const [detailFlag, setDetailFlag] = useState(false)
+    const [detailMessage, setDetailMessage] = useState("")
+    const [buyFlag, setbuyFlag] = useState(false)
+    const [buyInfo, setBuyInfo] = useState({
+        pcode: 0,
+        price: -2
+    })
 
     const setKeyword = (arg) => {
         setKeywordName(arg.kName)
@@ -58,6 +66,8 @@ function BuyerPage(props) {
     return (
         <div>
             <SearchBar2 setKeyword={setKeyword}></SearchBar2>
+            <DetailModal flag={detailFlag} setFlag={setDetailFlag} message={detailMessage}></DetailModal>
+            <BuyModal flag={buyFlag} setFlag={setbuyFlag} buyInfo={buyInfo}></BuyModal>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -69,9 +79,9 @@ function BuyerPage(props) {
                             <StyledTableCell width='10%'>판매 형식</StyledTableCell>
                             <StyledTableCell width='10%'>판매자 ID</StyledTableCell>
                             <StyledTableCell width='10%'>간단 설명</StyledTableCell>
-                            <StyledTableCell width='10%'>구매 희망 수</StyledTableCell>
-                            <StyledTableCell width='10%'>최종 수정 시간</StyledTableCell>
-                            <StyledTableCell width='5%'>구매</StyledTableCell>
+                            <StyledTableCell width='10%'>좋아요 수</StyledTableCell>
+                            <StyledTableCell width='5%'>찜하기</StyledTableCell>
+                            <StyledTableCell width='10%'>구매/경매</StyledTableCell>
                             <StyledTableCell width='5%'>상세설명</StyledTableCell>
                         </TableRow>
                     </TableHead>
@@ -102,12 +112,23 @@ function BuyerPage(props) {
                                 <TableCell width='10%'>{row.sellerid}</TableCell>
                                 <TableCell width='10%'>{row.ptext}</TableCell>
                                 <TableCell width='10%'>{row.plikes}</TableCell>
-                                <TableCell width='10%'>{row.ptime}</TableCell>
-                                <TableCell width="5%"><Button variant='contained' color='success' onClick={(e) => {
+                                <TableCell width='5%'><Button variant='contained' color='secondary' onClick={(e) => {
                                     e.preventDefault()
-                                }}>구매</Button></TableCell>
+                                }}>찜!</Button></TableCell>
+                                <TableCell width="10%"><Button variant='contained' color='success' onClick={(e) => {
+                                    e.preventDefault()
+                                    let price = -2
+                                    if(row.ptype === 'B') price = row.price
+                                    setBuyInfo({
+                                        pcode: row.pcode,
+                                        price: price+1
+                                    })
+                                    setbuyFlag(true)
+                                }}>구매/경매</Button></TableCell>
                                 <TableCell width="5%"><Button variant='contained' color='warning' onClick={(e) => {
                                     e.preventDefault()
+                                    setDetailFlag(true)
+                                    setDetailMessage(row.ptextdetail)
                                     }}>상세보기</Button></TableCell>
                             </TableRow>
                         ))}
